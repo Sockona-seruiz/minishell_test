@@ -1,0 +1,14 @@
+Revoir la structure des ficher
+
+Refacotiser :
+	- Unifier le nomage des variable
+	- unifier le nomage des function (list)
+
+Coder plus proprement :
+	- split
+
+Autres fonctions cool :
+	str(c)spn
+	strtok
+	strpbrk
+	strndup
