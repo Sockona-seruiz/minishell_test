@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 15:04:36 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 15:12:15 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	char	*mask;
 
 	ret = j + 1;
-	while (line[ret] && line[ret] != '\"')
+	while ((line[ret] && (line[ret] != '\"' && ret - 1 >= 0)) || line[ret - 1] == '\\')
 		ret++;
 	mask = malloc(sizeof(char) * (ret - j - 1));
 	mask[ret - j - 1] = '\0';
