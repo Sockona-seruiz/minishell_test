@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 15:25:03 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 16:17:32 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,13 +242,33 @@ int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret + 1);
 }
 
+int	ft_separator(char *line, t_node_binary *node, int j, t_str *str_struct)
+{
+	str_struct->str = NULL;
+	str_struct->mask = NULL;
+	if ((line[j] == '&' && line[j + 1] == '&') || (line[j] == '|' && line[j + 1] == '|'))
+		return (j + 2);
+	else if (line[j] && (line[j] == ';' || line[j] == '|'))
+		return (j + 1);
+}
+
+int	ft_is_separator(char *line, int j)
+{
+	if (line[j] == '&' && line[j + 1] == '&')
+		return (1);
+	else if (line[j] && (line[j] == ';' || line[j] == '|'))
+		return (1);
+	else
+		return (0);
+}
+
 int	ft_no_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 {
 	int		ret;
 	char	*mask;
 
 	ret = j;
-	while (line[ret] && line[ret] != '\"' && line[ret] != '\'')
+	while (line[ret] && line[ret] != '\"' && line[ret] != '\'' && ft_is_separator(line, ret) == 0) //Ajouter condition pour checker les separateurs
 	{
 		if (line[ret] == '\\')
 			ret++;
@@ -257,6 +277,7 @@ int	ft_no_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	mask = malloc(sizeof(char) * (ret - j));
 	mask[ret - j] = '\0';
 	ft_fill_mask(mask, '0', ret - j - 1, str_struct);
+	ft_fill_str(line, j, ret - j, str_struct);
 	return (ret);
 }
 
@@ -275,6 +296,8 @@ int	ft_treat_line(char *line)
 	j = 0;
 	while (line[j])
 	{
+		if (ft_is_separator(line, j) == 1)
+			j = ft_separator(line, node, j, str_struct);
 		if (line[j] != '\'' && line[j] != '\"')
 		{
 			printf("No Quotes :\n");
