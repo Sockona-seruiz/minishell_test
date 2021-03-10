@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 15:12:15 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 15:25:03 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,26 @@ void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 	printf("mask = %s\n", str_struct->mask);
 }
 
+void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
+{
+	char *s;
+	int x;
+
+	x = 0;
+	s = malloc(sizeof(char) * len);
+	while (x < len)
+	{
+		s[x] = line[j];
+		x++;
+		j++;
+	}
+	if (str_struct->str == NULL)
+		str_struct->str = s;
+	else
+		str_struct->str = ft_strjoin(str_struct->str, s);
+	printf("str = %s\n", str_struct->str);
+}
+
 int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 {
 	int		ret;
@@ -203,6 +223,7 @@ int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	mask = malloc(sizeof(char) * (ret - j - 1));
 	mask[ret - j - 1] = '\0';
 	ft_fill_mask(mask, '1', ret - j - 2, str_struct);
+	ft_fill_str(line, j + 1, ret - j - 1, str_struct);
 	return (ret + 1);
 }
 
@@ -217,6 +238,7 @@ int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	mask = malloc(sizeof(char) * (ret - j - 1));
 	mask[ret - j - 1] = '\0';
 	ft_fill_mask(mask, '2', ret - j - 2, str_struct);
+	ft_fill_str(line, j + 1, ret - j - 1, str_struct);
 	return (ret + 1);
 }
 
@@ -247,6 +269,7 @@ int	ft_treat_line(char *line)
 
 	str_struct = malloc(sizeof(t_str));
 	str_struct->mask = NULL;
+	str_struct->str = NULL;
 	node = malloc(sizeof(t_node_binary));
 	i = ft_strlen(line);
 	j = 0;
