@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 14:54:31 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 15:04:36 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,11 @@ void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 		mask[len] = c;
 		len--;
 	}
-	//str_struct->mask = ft_strjoin(str_struct->mask, mask);
-	printf("mask = %s\n", mask);
+	if (str_struct->mask == NULL)
+		str_struct->mask = mask;
+	else
+		str_struct->mask = ft_strjoin(str_struct->mask, mask);
+	printf("mask = %s\n", str_struct->mask);
 }
 
 int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
