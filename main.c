@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 16:17:32 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 16:47:32 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,12 +244,31 @@ int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 
 int	ft_separator(char *line, t_node_binary *node, int j, t_str *str_struct)
 {
+	t_node_binary	*new_node;
+	t_sep			*sep;
+
+	sep = malloc(sizeof(t_sep));
+	new_node = ft_binarytree_node_create(str_struct);
+	//Fill l'arbre binaire ICI
+	if (node->left == NULL)
+		node->left = new_node;
+	else if (node->right == NULL)
+		node->right = new_node;
+	else
+		//il faut remonter dans l'arbre et raccrocher l'ancien maillon à "left" du nouveau
+
+
+
 	str_struct->str = NULL;
 	str_struct->mask = NULL;
 	if ((line[j] == '&' && line[j + 1] == '&') || (line[j] == '|' && line[j + 1] == '|'))
+	{
 		return (j + 2);
+	}
 	else if (line[j] && (line[j] == ';' || line[j] == '|'))
+	{
 		return (j + 1);
+	}
 }
 
 int	ft_is_separator(char *line, int j)
