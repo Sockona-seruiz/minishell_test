@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/11 12:55:44 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/11 15:03:57 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,13 +266,14 @@ int	ft_separator(char *line, t_node_binary **root, int j, t_str **str_root)
 		printf("cree un nouveau noeud au dessus\n");
 		new_node = ft_binarytree_node_create(sep);
 		printf("\nstr left = %s\n", (((t_str *)(root[0]->left->value))->str));
-		if (root[0]->right == NULL)
-		{
+		//if (root[0]->right == NULL)
+		//{
 			root[0]->right = ft_binarytree_node_create(str_root[0]);
 			printf("\nstr right = %s\n", (((t_str *)(root[0]->right->value))->str));
 			new_node->left = *root;
-			root = &new_node;
-		}
+			//root[0] = new_node;
+			*root = new_node;
+		//}
 		/*
 		else
 		{
@@ -378,15 +379,30 @@ int	ft_show_tree(t_node_binary *root)
 {
 	char	node_type;
 	t_node_binary	**buff;
-	
+
+	printf("\n\nSHOW TREE :\n\n");
 	buff = &root;
-	while (buff[0])
+	while (buff[0] != NULL)
 	{
 		node_type = *((char*)(buff[0]->value));
 		printf("\nNodetype = %d\n", *((char*)(buff[0]->value)));
-		printf("\nLeft_Nodetype = %d\n", *((char*)(buff[0]->left->value)));
-		printf("\nRight_Nodetype = %d\n", *((char*)(buff[0]->right->value)));
-		buff = &buff[0]->left;
+
+		if (*((char*)(buff[0]->value)) == 0)
+			printf("\nNode str = %s\n", (((t_str *)(buff[0]->value))->str));
+
+		if (buff[0]->left != NULL)
+		{
+			printf("\nLeft_Nodetype = %d\n", *((char*)(buff[0]->left->value)));
+			printf("\nRight_Nodetype = %d\n", *((char*)(buff[0]->right->value)));
+			if (*((char*)(buff[0]->left->value)) == 0)
+				printf("\nstr left = %s\n", (((t_str *)(buff[0]->left->value))->str));
+
+			if (*((char*)(buff[0]->right->value)) == 0)
+				printf("\nstr right= %s\n", (((t_str *)(buff[0]->right->value))->str));
+			buff = &buff[0]->left;
+		}
+		else
+			buff[0] = NULL;
 	}
 
 	/*
@@ -447,9 +463,9 @@ int	ft_treat_line(char *line)
 		}
 	}
 	if (root[0]->value == NULL)
-		root[0]->value = str_struct;
+		root[0]->value = str_root[0];
 	else if (root[0]->right == NULL)
-		root[0]->right = ft_binarytree_node_create(str_struct);
+		root[0]->right = ft_binarytree_node_create(str_root[0]);
 	printf("line = %s\n", line);
 	ft_show_tree(root[0]);
 }
