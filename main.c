@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/11 11:12:18 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/11 11:53:15 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret + 1);
 }
 
-int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
+int	ft_double_quote(char *line, t_node_binary *root, int j, t_str *str_struct)
 {
 	int		ret;
 	char	*mask;
@@ -242,7 +242,7 @@ int	ft_double_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret + 1);
 }
 
-int	ft_separator(char *line, t_node_binary *node, int j, t_str *str_struct)
+int	ft_separator(char *line, t_node_binary **root, int j, t_str *str_struct)
 {
 	t_node_binary	*new_node;
 	t_sep			*sep;
@@ -250,23 +250,28 @@ int	ft_separator(char *line, t_node_binary *node, int j, t_str *str_struct)
 	sep = malloc(sizeof(t_sep));
 	sep->id = 1;
 
-	if (node->value == NULL)
+	if (root[0]->value == NULL)
 	{
 		printf("Node value == NULL\n");
-		node->value = sep;
-		node->left = ft_binarytree_node_create(str_struct);
+		root[0]->value = sep;
+		printf("\nFirst Nodetype = %c\n", *((char*)(root[0]->value)));
+		root[0]->left = ft_binarytree_node_create(str_struct);
+		printf("\nFirst Nodetype left = %c\n", *((char*)(root[0]->left->value)));
 	}
 
 	else
 	{
 		printf("cree un nouveau noeud au dessus\n");
 		new_node = ft_binarytree_node_create(sep);
-		node->right = ft_binarytree_node_create(str_struct);
-		new_node->left = node;
-		printf("Adresse new_node = %p\nAdresse old_node = %p\n", &new_node, &node);
-		node = new_node;
-		printf("Nouvelle adresse node = %p\n", &node);
+		root[0]->right = ft_binarytree_node_create(str_struct);
+		new_node->left = *root;
+		printf("Adresse new_node = %p\nAdresse old_node = %p\n", &new_node, &*root);
+		root = &new_node;
+		printf("Nouvelle adresse root = %p\n", &*root);
 	}
+
+	printf("\nNodetype = %c\n", *((char*)(root[0]->value)));
+
 	free(str_struct);
 	str_struct = malloc(sizeof(t_str));
 	str_struct->id = 0;
@@ -350,12 +355,14 @@ int	ft_no_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret);
 }
 
-int	ft_show_tree(t_node_binary *node)
+int	ft_show_tree(t_node_binary **root)
 {
 	char	node_type;
 
-	node_type = *((char*)(node->value));
-	printf("\nNodetype = %c\n", node_type);
+	node_type = *((char*)(root[0]->value));
+	printf("\nNodetype = %d\n", node_type);
+
+
 	/*
 	if (node_type == SHELL_INSTRUCTION_COMMAND)
 		return (instruction_command(context, node));
@@ -373,6 +380,7 @@ int	ft_treat_line(char *line)
 {
 	int				i;
 	int				j;
+	t_node_binary	**root;
 	t_node_binary	*node;
 	t_str			*str_struct;
 
@@ -380,36 +388,39 @@ int	ft_treat_line(char *line)
 	str_struct->id = 0;
 	str_struct->mask = NULL;
 	str_struct->str = NULL;
+	root = malloc(sizeof(t_node_binary *));
 	node = ft_binarytree_node_create(NULL);
+	root[0] = node;
+	printf("First Adress = %p\n", &root[0]);
 	i = ft_strlen(line);
 	j = 0;
 	while (line[j])
 	{
 		if (ft_is_separator(line, j) == 1)
-			j = ft_separator(line, node, j, str_struct);
+			j = ft_separator(line, root, j, str_struct);
 		if (line[j] != '\'' && line[j] != '\"')
 		{
 			printf("No Quotes :\n");
-			j = ft_no_quote(line, node, j, str_struct);
+			j = ft_no_quote(line, *root, j, str_struct);
 			printf("exit j = %d\n", j);
 		}
 		else if (line[j] == '\'')
 		{
 			printf("Single Quotes :\n");
-			j = ft_single_quote(line, node, j, str_struct);
+			j = ft_single_quote(line, *root, j, str_struct);
 			printf("exit j = %d\n", j);
 		}
 		else if (line[j] == '\"')
 		{
 			printf("Double Quotes :\n");
-			j = ft_double_quote(line, node, j, str_struct);
+			j = ft_double_quote(line, *root, j, str_struct);
 			printf("exit j = %d\n", j);
 		}
 	}
-	if (node->value == NULL)
-		node->value = str_struct;
+	if (root[0]->value == NULL)
+		root[0]->value = str_struct;
 	printf("line = %s\n", line);
-	ft_show_tree(node);
+	ft_show_tree(root);
 }
 
 int	main(void)
