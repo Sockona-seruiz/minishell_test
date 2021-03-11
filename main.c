@@ -6,176 +6,11 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/11 15:03:57 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/11 16:05:18 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
-
-/*
-int	ft_add_spaces(char *s, int x, char c, char v)
-{
-	s[x] = ' ';
-	s[x + 1] = c;
-	if (v != '\0')
-	{
-		s[x + 2] = v;
-		s[x + 3] = ' ';
-		return (x + 3);
-	}
-	else
-		s[x + 2] = ' ';
-	return (x + 2);
-}
-
-char	*ft_get_blocks(char *line, int i, int compt, int n)
-{
-	int		j;
-	char	*s;
-	int		x;
-
-	x = 0;
-	j = i + compt * 2;
-	s = malloc(sizeof(char) * (j + 1));
-	if (s == NULL)
-		return (0);
-	while (n <= i)
-	{
-		if (line[n] == '|')
-		{
-			if (n < i - 1 && line[n + 1] == '|')
-			{
-				x = ft_add_spaces(s, x, '|', '|');
-				n++;
-			}
-			else
-				x = ft_add_spaces(s, x, '|', '\0');
-		}
-		else if (line[n] == '&')
-		{
-			if (n < i - 1 && line[n + 1] == '&')
-			{
-				x = ft_add_spaces(s, x, '&', '&');
-				n++;
-			}
-		}
-		else if (line[n] == ';')
-			x = ft_add_spaces(s, x, line[n], '\0');
-		else
-			s[x] = line[n];
-		x++;
-		n++;
-	}
-	//s[x] = '\0';
-	return (s);
-}
-
-char	*ft_test(char *line, int i)
-{
-	int		j;
-	int		compt;
-	int		n;
-
-	n = 0;
-	compt = 0;
-	j = 0;
-	while (j < i)
-	{
-		if (line[j] == '|')
-		{
-			if (j < i - 1 && line[j + 1] == '|')
-				j += 2;
-			else
-				j++;
-			compt += 1;
-		}
-		else if (line[j] == '&')
-		{
-			if (j < i - 1 && line[j + 1] == '&')
-				j += 2;
-			else
-				j++;
-			compt += 1;
-		}
-		else if (line[j] == ';')
-			compt += 1;
-		j++;
-	}
-	printf("found %d separators\n", compt);
-	return (ft_get_blocks(line, i, compt, n));
-}
-
-int	ft_treat_line(char **line)
-{
-	int	i;
-	int	j;
-	char	**test;
-	char	*s;
-
-	j = 0;
-	i = ft_strlen(*line);
-	s =ft_test(*line, i);
-	//printf("line len = %d\n", i);
-	test = ft_split(s, ' ');
-	while (test[j])
-	{
-		printf("%s\n", test[j]);
-		j++;
-	}
-	return (1);
-}
-
-int	ft_treat_quotes(char *line, int i, int j, int ret)
-{
-	
-}
-
-int	ft_treat_sep(char *line, int i, int j, t_node *node)
-{
-	int ret;
-	t_sep	*separator;
-
-	ret = j;
-	separator = malloc(sizeof(t_sep));
-	while (ret < i)
-	{
-		if (line[ret] == '\'' || line[ret] == '\"')
-			return (ret + ft_treat_quotes(line, i, j, ret));
-		else if (line[ret] == '|' || line[ret] == ';' || line[ret] == '&')
-		{
-			if (ret + 1 < i && line[ret + 1] == '|')
-			{
-				
-			}
-		}
-	}
-}
-
-int ft_treat_line(char *line, t_node *node)
-{
-	int	i;
-	int	j;
-	int	ret;
-
-	i = ft_strlen(line);
-	j = 0;
-	while (j < i)
-	{
-		ret = ft_treat_sep(line, i, j, node);
-		if (ret > 0)
-			j += ret;
-		else
-		{
-			ret = ft_treat_command(line, i, j, node);
-			if (ret > 0)
-				j += ret;
-		}
-		//printf("%c", line[j]);
-		//j++;
-	}
-	printf("\n");
-}
-*/
+#include "minishell.h"
 
 void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 {
@@ -189,13 +24,12 @@ void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 		str_struct->mask = mask;
 	else
 		str_struct->mask = ft_strjoin(str_struct->mask, mask);
-	printf("mask = %s\n", str_struct->mask);
 }
 
 void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
 {
-	char *s;
-	int x;
+	char	*s;
+	int		x;
 
 	x = 0;
 	s = malloc(sizeof(char) * len);
@@ -209,10 +43,9 @@ void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
 		str_struct->str = s;
 	else
 		str_struct->str = ft_strjoin(str_struct->str, s);
-	printf("str = %s\n", str_struct->str);
 }
 
-int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
+int	ft_single_quote(char *line, int j, t_str *str_struct)
 {
 	int		ret;
 	char	*mask;
@@ -227,13 +60,14 @@ int	ft_single_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret + 1);
 }
 
-int	ft_double_quote(char *line, t_node_binary *root, int j, t_str *str_struct)
+int	ft_double_quote(char *line, int j, t_str *str_struct)
 {
 	int		ret;
 	char	*mask;
 
 	ret = j + 1;
-	while ((line[ret] && (line[ret] != '\"' && ret - 1 >= 0)) || line[ret - 1] == '\\')
+	while ((line[ret] && (line[ret] != '\"' && ret - 1 >= 0))
+		|| line[ret - 1] == '\\')
 		ret++;
 	mask = malloc(sizeof(char) * (ret - j - 1));
 	mask[ret - j - 1] = '\0';
@@ -242,108 +76,56 @@ int	ft_double_quote(char *line, t_node_binary *root, int j, t_str *str_struct)
 	return (ret + 1);
 }
 
-int	ft_separator(char *line, t_node_binary **root, int j, t_str **str_root)
+t_sep	*ft_set_sep(char *line, int j)
 {
-	t_node_binary	*new_node;
 	t_sep			*sep;
-	t_str			*str_struct;
 
 	sep = malloc(sizeof(t_sep));
-	sep->id = 1;
+	if (line[j] == '&' && line[j + 1] == '&')
+		sep->id = SHELL_SEPARATOR_TYPE_AND;
+	else if (line[j] == '|' && line[j + 1] == '|')
+		sep->id = SHELL_SEPARATOR_TYPE_OR;
+	else if (line[j] == ';')
+		sep->id = SHELL_SEPARATOR_TYPE_END;
+	else if (line[j] == '|')
+		sep->id = SHELL_SEPARATOR_TYPE_PIPE;
+	return (sep);
+}
 
-	if (root[0]->value == NULL)
-	{
-		printf("Node value == NULL\n");
-		root[0]->value = sep;
-		root[0]->left = ft_binarytree_node_create(str_root[0]);
-		printf("\nFirst Nodetype = %d\n", *((char*)(root[0]->value)));
-		printf("\nFirst Nodetype left = %d\n", *((char*)(root[0]->left->value)));
-		printf("\nstr left = %s\n", (((t_str *)(root[0]->left->value))->str));
-	}
+t_str	*ft_new_str_struct(void)
+{
+	t_str	*str_struct;
 
-	else
-	{
-		printf("cree un nouveau noeud au dessus\n");
-		new_node = ft_binarytree_node_create(sep);
-		printf("\nstr left = %s\n", (((t_str *)(root[0]->left->value))->str));
-		//if (root[0]->right == NULL)
-		//{
-			root[0]->right = ft_binarytree_node_create(str_root[0]);
-			printf("\nstr right = %s\n", (((t_str *)(root[0]->right->value))->str));
-			new_node->left = *root;
-			//root[0] = new_node;
-			*root = new_node;
-		//}
-		/*
-		else
-		{
-			new_node->left = *root;
-			root = &new_node;
-			root[0]->right = ft_binarytree_node_create(str_struct);
-		}
-		*/
-		printf("Adresse new_node = %p\nAdresse old_node = %p\n", &new_node, &*root);
-		//root = &new_node;
-		printf("Nouvelle adresse root = %p\n", &*root);
-		printf("\nFirst Nodetype = %d\n", *((char*)(root[0]->value)));
-		printf("\nFirst Nodetype left = %d\n", *((char*)(root[0]->left->value)));
-		//printf("\nFirst Nodetype right = %d\n", *((char*)(root[0]->right->value)));
-	}
-
-	printf("\nNodetype = %d\n", *((char*)(root[0]->value)));
-
-	//free(str_struct);
 	str_struct = malloc(sizeof(t_str));
 	str_struct->id = 0;
 	str_struct->mask = NULL;
 	str_struct->str = NULL;
-	str_root[0] = str_struct;
+	return (str_struct);
+}
 
-	//new_node = ft_binarytree_node_create(str_struct);
-	/*
-	if (node->left != NULL && node->right != NULL && node->value != NULL)
+int	ft_separator(char *line, t_node_binary **root, int j, t_str **str_root)
+{
+	t_node_binary	*new_node;
+	t_sep			*sep;
+
+	sep = ft_set_sep(line, j);
+	if ((*root)->value == NULL)
 	{
-		new_node->left = node;
-		new_node->value = sep;
-		node = new_node;
-		node->right = str_struct;
+		(*root)->value = sep;
+		(*root)->left = ft_binarytree_node_create(*str_root);
 	}
-	else if (node->right == NULL && node->left != NULL)
-	{
-		new_node->value = str_struct;
-		node->right = new_node;
-	}
-	else //cas où c'est le premier node
-	{
-		node->value = sep;
-		new_node->value = str_struct;
-		node->right = new_node;
-		node = new_node;
-	}
-	*/
-	//Fill l'arbre binaire ICI
-	/*
-	if (node->left == NULL)
-		node->left = new_node;
-	else if (node->right == NULL)
-		node->right = new_node;
 	else
-		//il faut remonter dans l'arbre et raccrocher l'ancien maillon à "left" du nouveau
-	*/
-
-
-	//str_struct->str = NULL;
-	//str_struct->mask = NULL;
-	if ((line[j] == '&' && line[j + 1] == '&') || (line[j] == '|' && line[j + 1] == '|'))
 	{
-		printf("double sep\n");
-		return (j + 2);
+		new_node = ft_binarytree_node_create(sep);
+		(*root)->right = ft_binarytree_node_create(*str_root);
+		new_node->left = *root;
+		*root = new_node;
 	}
-	else if (line[j] && (line[j] == ';' || line[j] == '|'))
-	{
-		printf("single sep\n");
+	*str_root = ft_new_str_struct();
+	if (sep->id == SHELL_SEPARATOR_TYPE_END
+		|| sep->id == SHELL_SEPARATOR_TYPE_PIPE)
 		return (j + 1);
-	}
+	return (j + 2);
 }
 
 int	ft_is_separator(char *line, int j)
@@ -356,13 +138,14 @@ int	ft_is_separator(char *line, int j)
 		return (0);
 }
 
-int	ft_no_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
+int	ft_no_quote(char *line, int j, t_str *str_struct)
 {
 	int		ret;
 	char	*mask;
 
 	ret = j;
-	while (line[ret] && line[ret] != '\"' && line[ret] != '\'' && ft_is_separator(line, ret) == 0) //Ajouter condition pour checker les separateurs
+	while (line[ret] && line[ret] != '\"' && line[ret] != '\''
+		&& ft_is_separator(line, ret) == 0)
 	{
 		if (line[ret] == '\\')
 			ret++;
@@ -404,70 +187,51 @@ int	ft_show_tree(t_node_binary *root)
 		else
 			buff[0] = NULL;
 	}
-
-	/*
-	if (node_type == SHELL_INSTRUCTION_COMMAND)
-		return (instruction_command(context, node));
-	else if (node_type == SHELL_INSTRUCTION_BUILTIN)
-		return (instruction_builtin(context, node));
-	else if (node_type == SHELL_INSTRUCTION_UNKNOWN)
-		return (404);
-	else
-		return (run_separator(context, node_type, node));
-	*/
 	return (0);
+}
+
+t_parse_struct	*ft_setup_parse_struct(void)
+{
+	t_parse_struct	*ret;
+
+	ret = malloc(sizeof(t_parse_struct));
+	ret->str_struct = malloc(sizeof(t_str));
+	ret->str_struct->id = 0;
+	ret->str_struct->mask = NULL;
+	ret->str_struct->str = NULL;
+	ret->root = malloc(sizeof(t_node_binary *));
+	ret->str_root = malloc(sizeof(t_str *));
+	ret->node = ft_binarytree_node_create(NULL);
+	ret->str_root[0] = ret->str_struct;
+	ret->root[0] = ret->node;
+	return (ret);
 }
 
 int	ft_treat_line(char *line)
 {
 	int				i;
 	int				j;
-	t_node_binary	**root;
-	t_node_binary	*node;
-	t_str			**str_root;
-	t_str			*str_struct;
+	t_parse_struct	*s;
 
-	str_struct = malloc(sizeof(t_str));
-	str_struct->id = 0;
-	str_struct->mask = NULL;
-	str_struct->str = NULL;
-	root = malloc(sizeof(t_node_binary *));
-	str_root = malloc(sizeof(t_str *));
-	node = ft_binarytree_node_create(NULL);
-	str_root[0] = str_struct;
-	root[0] = node;
-	//printf("First Adress = %p\n", &root[0]);
+	s = ft_setup_parse_struct();
 	i = ft_strlen(line);
 	j = 0;
 	while (line[j])
 	{
 		if (ft_is_separator(line, j) == 1)
-			j = ft_separator(line, root, j, str_root);
+			j = ft_separator(line, s->root, j, s->str_root);
 		if (line[j] != '\'' && line[j] != '\"')
-		{
-			printf("No Quotes :\n");
-			j = ft_no_quote(line, *root, j, *str_root);
-			printf("exit j = %d\n", j);
-		}
+			j = ft_no_quote(line, j, s->str_root[0]);
 		else if (line[j] == '\'')
-		{
-			printf("Single Quotes :\n");
-			j = ft_single_quote(line, *root, j, *str_root);
-			printf("exit j = %d\n", j);
-		}
+			j = ft_single_quote(line, j, s->str_root[0]);
 		else if (line[j] == '\"')
-		{
-			printf("Double Quotes :\n");
-			j = ft_double_quote(line, *root, j, *str_root);
-			printf("exit j = %d\n", j);
-		}
+			j = ft_double_quote(line, j, s->str_root[0]);
 	}
-	if (root[0]->value == NULL)
-		root[0]->value = str_root[0];
-	else if (root[0]->right == NULL)
-		root[0]->right = ft_binarytree_node_create(str_root[0]);
-	printf("line = %s\n", line);
-	ft_show_tree(root[0]);
+	if ((s->root[0])->value == NULL)
+		(s->root[0])->value = (s->str_root[0]);
+	else if ((s->root[0])->right == NULL)
+		(s->root[0])->right = ft_binarytree_node_create((s->str_root[0]));
+	ft_show_tree(s->root[0]);
 }
 
 int	main(void)
