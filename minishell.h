@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:19:53 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 13:23:30 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/10 15:23:07 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct	s_separator
 typedef struct	s_str
 {
 	char	id;
-	char	*s;
+	char	*str;
 	char	*mask;
 }				t_str;
 

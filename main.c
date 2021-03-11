@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/10 16:47:32 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/11 11:12:18 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,25 +248,75 @@ int	ft_separator(char *line, t_node_binary *node, int j, t_str *str_struct)
 	t_sep			*sep;
 
 	sep = malloc(sizeof(t_sep));
-	new_node = ft_binarytree_node_create(str_struct);
+	sep->id = 1;
+
+	if (node->value == NULL)
+	{
+		printf("Node value == NULL\n");
+		node->value = sep;
+		node->left = ft_binarytree_node_create(str_struct);
+	}
+
+	else
+	{
+		printf("cree un nouveau noeud au dessus\n");
+		new_node = ft_binarytree_node_create(sep);
+		node->right = ft_binarytree_node_create(str_struct);
+		new_node->left = node;
+		printf("Adresse new_node = %p\nAdresse old_node = %p\n", &new_node, &node);
+		node = new_node;
+		printf("Nouvelle adresse node = %p\n", &node);
+	}
+	free(str_struct);
+	str_struct = malloc(sizeof(t_str));
+	str_struct->id = 0;
+	str_struct->mask = NULL;
+	str_struct->str = NULL;
+
+	//new_node = ft_binarytree_node_create(str_struct);
+	
+	/*
+	if (node->left != NULL && node->right != NULL && node->value != NULL)
+	{
+		new_node->left = node;
+		new_node->value = sep;
+		node = new_node;
+		node->right = str_struct;
+	}
+	else if (node->right == NULL && node->left != NULL)
+	{
+		new_node->value = str_struct;
+		node->right = new_node;
+	}
+	else //cas où c'est le premier node
+	{
+		node->value = sep;
+		new_node->value = str_struct;
+		node->right = new_node;
+		node = new_node;
+	}
+	*/
 	//Fill l'arbre binaire ICI
+	/*
 	if (node->left == NULL)
 		node->left = new_node;
 	else if (node->right == NULL)
 		node->right = new_node;
 	else
 		//il faut remonter dans l'arbre et raccrocher l'ancien maillon à "left" du nouveau
+	*/
 
 
-
-	str_struct->str = NULL;
-	str_struct->mask = NULL;
+	//str_struct->str = NULL;
+	//str_struct->mask = NULL;
 	if ((line[j] == '&' && line[j + 1] == '&') || (line[j] == '|' && line[j + 1] == '|'))
 	{
+		printf("double sep\n");
 		return (j + 2);
 	}
 	else if (line[j] && (line[j] == ';' || line[j] == '|'))
 	{
+		printf("single sep\n");
 		return (j + 1);
 	}
 }
@@ -300,6 +350,25 @@ int	ft_no_quote(char *line, t_node_binary *node, int j, t_str *str_struct)
 	return (ret);
 }
 
+int	ft_show_tree(t_node_binary *node)
+{
+	char	node_type;
+
+	node_type = *((char*)(node->value));
+	printf("\nNodetype = %c\n", node_type);
+	/*
+	if (node_type == SHELL_INSTRUCTION_COMMAND)
+		return (instruction_command(context, node));
+	else if (node_type == SHELL_INSTRUCTION_BUILTIN)
+		return (instruction_builtin(context, node));
+	else if (node_type == SHELL_INSTRUCTION_UNKNOWN)
+		return (404);
+	else
+		return (run_separator(context, node_type, node));
+	*/
+	return (0);
+}
+
 int	ft_treat_line(char *line)
 {
 	int				i;
@@ -308,9 +377,10 @@ int	ft_treat_line(char *line)
 	t_str			*str_struct;
 
 	str_struct = malloc(sizeof(t_str));
+	str_struct->id = 0;
 	str_struct->mask = NULL;
 	str_struct->str = NULL;
-	node = malloc(sizeof(t_node_binary));
+	node = ft_binarytree_node_create(NULL);
 	i = ft_strlen(line);
 	j = 0;
 	while (line[j])
@@ -336,7 +406,10 @@ int	ft_treat_line(char *line)
 			printf("exit j = %d\n", j);
 		}
 	}
+	if (node->value == NULL)
+		node->value = str_struct;
 	printf("line = %s\n", line);
+	ft_show_tree(node);
 }
 
 int	main(void)
