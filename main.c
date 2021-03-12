@@ -6,7 +6,7 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/11 16:05:18 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/12 09:55:49 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ int	ft_no_quote(char *line, int j, t_str *str_struct)
 
 int	ft_show_tree(t_node_binary *root)
 {
-	char	node_type;
+	char			node_type;
 	t_node_binary	**buff;
 
 	printf("\n\nSHOW TREE :\n\n");
@@ -169,17 +169,14 @@ int	ft_show_tree(t_node_binary *root)
 	{
 		node_type = *((char*)(buff[0]->value));
 		printf("\nNodetype = %d\n", *((char*)(buff[0]->value)));
-
 		if (*((char*)(buff[0]->value)) == 0)
 			printf("\nNode str = %s\n", (((t_str *)(buff[0]->value))->str));
-
 		if (buff[0]->left != NULL)
 		{
 			printf("\nLeft_Nodetype = %d\n", *((char*)(buff[0]->left->value)));
 			printf("\nRight_Nodetype = %d\n", *((char*)(buff[0]->right->value)));
 			if (*((char*)(buff[0]->left->value)) == 0)
 				printf("\nstr left = %s\n", (((t_str *)(buff[0]->left->value))->str));
-
 			if (*((char*)(buff[0]->right->value)) == 0)
 				printf("\nstr right= %s\n", (((t_str *)(buff[0]->right->value))->str));
 			buff = &buff[0]->left;
@@ -207,7 +204,7 @@ t_parse_struct	*ft_setup_parse_struct(void)
 	return (ret);
 }
 
-int	ft_treat_line(char *line)
+t_node_binary	*ft_treat_line(char *line)
 {
 	int				i;
 	int				j;
@@ -231,14 +228,15 @@ int	ft_treat_line(char *line)
 		(s->root[0])->value = (s->str_root[0]);
 	else if ((s->root[0])->right == NULL)
 		(s->root[0])->right = ft_binarytree_node_create((s->str_root[0]));
-	ft_show_tree(s->root[0]);
+	return (s->root[0]);
 }
 
 int	main(void)
 {
-	char	**line;
-	char	*prompt;
-	int		ret;
+	char			**line;
+	char			*prompt;
+	int				ret;
+	t_node_binary	*root;
 
 	ret = 0;
 	line = malloc(sizeof(char **));
@@ -252,7 +250,8 @@ int	main(void)
 	{
 		write(1, prompt, 12);
 		ret = get_next_line(0, line);
-		ft_treat_line(*line);
+		root = ft_treat_line(*line);
+		ft_show_tree(root);
 		free(*line);
 	}
 	return (1);
