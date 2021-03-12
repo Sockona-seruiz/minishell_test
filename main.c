@@ -6,11 +6,27 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/12 09:55:49 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/12 11:20:12 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*str;
+	size_t	str1_lenght;
+	size_t	str2_lenght;
+
+	str1_lenght = ft_strlen(s1);
+	str2_lenght = ft_strlen(s2);
+	str = ft_managed_malloc(sizeof(char) * (str1_lenght + str2_lenght + 1))
+	ft_strlcat(str, s1, str1_lenght + 1);
+	ft_strlcat(str, s2, str1_lenght + str2_lenght + 1);
+	ft_managed_free(s1);
+	ft_managed_free(s2);
+	return (str);
+}
 
 void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 {
@@ -23,7 +39,7 @@ void	ft_fill_mask(char *mask, char c, int len, t_str *str_struct)
 	if (str_struct->mask == NULL)
 		str_struct->mask = mask;
 	else
-		str_struct->mask = ft_strjoin(str_struct->mask, mask);
+		str_struct->mask = ft_strjoin_free(str_struct->mask, mask);
 }
 
 void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
@@ -42,7 +58,7 @@ void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
 	if (str_struct->str == NULL)
 		str_struct->str = s;
 	else
-		str_struct->str = ft_strjoin(str_struct->str, s);
+		str_struct->str = ft_strjoin_free(str_struct->str, s);
 }
 
 int	ft_single_quote(char *line, int j, t_str *str_struct)
@@ -53,7 +69,7 @@ int	ft_single_quote(char *line, int j, t_str *str_struct)
 	ret = j + 1;
 	while (line[ret] && line[ret] != '\'')
 		ret++;
-	mask = malloc(sizeof(char) * (ret - j - 1));
+	mask = malloc(sizeof(char) * (ret - j));
 	mask[ret - j - 1] = '\0';
 	ft_fill_mask(mask, '1', ret - j - 2, str_struct);
 	ft_fill_str(line, j + 1, ret - j - 1, str_struct);
@@ -69,7 +85,7 @@ int	ft_double_quote(char *line, int j, t_str *str_struct)
 	while ((line[ret] && (line[ret] != '\"' && ret - 1 >= 0))
 		|| line[ret - 1] == '\\')
 		ret++;
-	mask = malloc(sizeof(char) * (ret - j - 1));
+	mask = malloc(sizeof(char) * (ret - j));
 	mask[ret - j - 1] = '\0';
 	ft_fill_mask(mask, '2', ret - j - 2, str_struct);
 	ft_fill_str(line, j + 1, ret - j - 1, str_struct);
@@ -151,7 +167,7 @@ int	ft_no_quote(char *line, int j, t_str *str_struct)
 			ret++;
 		ret++;
 	}
-	mask = malloc(sizeof(char) * (ret - j));
+	mask = malloc(sizeof(char) * (ret - j + 1));
 	mask[ret - j] = '\0';
 	ft_fill_mask(mask, '0', ret - j - 1, str_struct);
 	ft_fill_str(line, j, ret - j, str_struct);
