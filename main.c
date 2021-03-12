@@ -6,23 +6,40 @@
 /*   By: seruiz <seruiz@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 13:18:34 by seruiz            #+#    #+#             */
-/*   Updated: 2021/03/12 11:20:12 by seruiz           ###   ########lyon.fr   */
+/*   Updated: 2021/03/12 11:40:40 by seruiz           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	ft_cat(char *dest, char *s, int j)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		dest[j] = s[i];
+		i++;
+		j++;
+	}
+	return (j);
+}
+
 char	*ft_strjoin_free(char *s1, char *s2)
 {
 	char	*str;
+	int		j;
 	size_t	str1_lenght;
 	size_t	str2_lenght;
 
+	j = 0;
 	str1_lenght = ft_strlen(s1);
 	str2_lenght = ft_strlen(s2);
-	str = ft_managed_malloc(sizeof(char) * (str1_lenght + str2_lenght + 1))
-	ft_strlcat(str, s1, str1_lenght + 1);
-	ft_strlcat(str, s2, str1_lenght + str2_lenght + 1);
+	str = ft_managed_malloc(sizeof(char) * (str1_lenght + str2_lenght + 1));
+	str[str1_lenght + str2_lenght] = '\0';
+	j = ft_cat(str, s1, 0);
+	j = ft_cat(str, s2, j);
 	ft_managed_free(s1);
 	ft_managed_free(s2);
 	return (str);
@@ -48,10 +65,13 @@ void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
 	int		x;
 
 	x = 0;
-	s = malloc(sizeof(char) * len);
+	s = malloc(sizeof(char) * len + 1);
+	s[len] = '\0';
+	printf("Line = ");
 	while (x < len)
 	{
 		s[x] = line[j];
+		printf("%c ", line[j]);
 		x++;
 		j++;
 	}
@@ -59,6 +79,8 @@ void	ft_fill_str(char *line, int j, int len, t_str *str_struct)
 		str_struct->str = s;
 	else
 		str_struct->str = ft_strjoin_free(str_struct->str, s);
+	printf("befor show str\n");
+	printf("str = %s\n", str_struct->str);
 }
 
 int	ft_single_quote(char *line, int j, t_str *str_struct)
